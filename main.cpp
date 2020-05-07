@@ -5,24 +5,50 @@ using namespace std;
 struct Element{
     string data;
     Element *next;
+    Element *tail;
 };
 struct List{
     int n;
     Element *head;
     Element *tail;
 };
+//create List
+ List* createList(){
+    List *ls;
+    ls=new List();
+    ls->n=0;
+    ls->head=NULL;
+    ls->tail=NULL;
+    return ls;
+}
 class mainMenu{
     public:
-       void designMenu();
-       void chooseLanguage();
+       void designMenu();//display the main Menu
+       void chooseLanguage();// choose lannguage main Menu
+};
+//the processing in automata
+class Automata{
+    public:
+
+
 };
 class Database{
-    
+    public:
+        void insertData(ls);
+
+    private:
+        sqlite3 *db;
+        char exit=0;
+        char *message;
+        string sql;
 };
 int main(){
     //declare variable 
     int choice;
+    string data;
     mainMenu mainMenu;
+    Database database;
+
     while (1)
     {
         cout<<"\t\t\t=================================\n";
@@ -34,13 +60,17 @@ int main(){
         if (choice==1)
         {
             mainMenu.chooseLanguage();
-        }else if (choice==6)
+            cout<<"Insert language:";
+            cin>>data;
+        }
+        else if (choice==6)
         {
             cout<<"Exit the program\n\n";
             break;
         }
     }
 }
+//display main Menu
 void mainMenu::designMenu(){
     cout<<"\t\t1.Input the strings.\n\n";
     cout<<"\t\t2.Check the strings(FA or DFA).\n\n";
@@ -49,8 +79,11 @@ void mainMenu::designMenu(){
     cout<<"\t\t5. Minimize a DFA.\n\n";
     cout<<"\t\t6. Exit the program.\n\n";
 }
+//choose the language menu in choice number 1
 void mainMenu::chooseLanguage(){
     cout<<"1.Choose language below";
     cout<<"L={W|W={ab}^n} ,n>0\n";
-
+}
+void Database::insertData(ls){
+    
 }
