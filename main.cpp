@@ -34,13 +34,15 @@ class Automata{
 };
 class Database{
     public:
-        void insertData(ls);
-
+        void createDatabase();
+        void insertData(string data);
     private:
+        string sql;
         sqlite3 *db;
         char exit=0;
+        char hey=0;
         char *message;
-        string sql;
+
 };
 int main(){
     //declare variable 
@@ -49,8 +51,10 @@ int main(){
     mainMenu mainMenu;
     Database database;
 
+    database.createDatabase();
     while (1)
     {
+
         cout<<"\t\t\t=================================\n";
         cout<<"\t\t\t|Welcome to Automata Program -_-|\n";
         cout<<"\t\t\t=================================\n\n";
@@ -84,6 +88,27 @@ void mainMenu::chooseLanguage(){
     cout<<"1.Choose language below";
     cout<<"L={W|W={ab}^n} ,n>0\n";
 }
-void Database::insertData(ls){
+void Database::insertData(string data){
     
+}
+void Database::createDatabase(){
+    sql="create table Language("
+        "lid integer primary key autoincrement,"
+        "data char(100) not null);";
+    //create database
+    exit=sqlite3_open("automata.db",&db);
+    //execute the query
+    exit =sqlite3_exec(db,sql.c_str(),0,NULL,&message);
+    //check if successful create or not
+    if(hey!=SQLITE_OK){
+        cout<<"Fail create database\n";
+    }else{
+        cout<<"Can create database\n";
+    }
+    if(exit!=SQLITE_OK){
+        cout<<"Fail create Table\n";
+    }else{
+        cout<<"Successful create the table\n";
+    }
+    sqlite3_close(db);
 }
