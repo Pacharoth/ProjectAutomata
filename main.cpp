@@ -163,10 +163,8 @@ void Database::createDatabase(){
 void Database::insertData(List *ls){
     Element *tmp;
     tmp =ls->front;
-    while(tmp!=NULL){
-        sql="insert into Language(data) values('"+tmp->data+"');";
-        tmp->next;
-    }
+    sql="insert into Language(data) values('"+tmp->data+"');";
+    tmp->next;
     // sql="insert into Language(data) values('"+tmp->data+"');";
     exit=sqlite3_open("automata.db",&db);
     exit=sqlite3_exec(db,sql.c_str(),0,NULL,&message);
