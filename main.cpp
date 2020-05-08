@@ -15,9 +15,9 @@ class algo_LinkList{
         //Checking queue()
         List *Queue();
         //create beQueue(begin)
-        void beQueue(string newData);
+        void beQueue(List *ls,string newData);
         //create enQueue(end)
-        void enQueue(string newData);
+        void enQueue(List *ls,string newData);
         //create deQueue(delete)
         void deQueue();
 };
@@ -38,7 +38,7 @@ class Database{
         //create database
         void createDatabase();
         //insert to database
-        void insertData(string data);
+        void insertData(List *ls);
         //Load database
         void loadData();
     private:
@@ -73,14 +73,14 @@ int main(){
             mainMenu.chooseLanguage();
             cout<<"Insert language:";
             cin>>data;
-            Link.enQueue(data);
+            Link.enQueue(ls,data);
         }
         else if (choice==2) {
           /* code */
         }
         else if (choice==6)
         {
-            database.insertData(data);
+            database.insertData(ls);
             cout<<"Exit the program\n\n";
             break;
         }
@@ -108,28 +108,26 @@ List* algo_LinkList::Queue(){
     ls->rear=ls->front=NULL;
     return ls;
 }
-void algo_LinkList::beQueue(string newData){
+void algo_LinkList::beQueue(List *ls,string newData){
     //declare variable
-    List *ls;
     Element *e;
     //create new Element
     e= new Element();
     e->data=newData;
     e->next =ls->front;
-    ls->front=e->next;
+    ls->front=e;
     if (ls->n==0) {
         //set rear to NULL
-        ls->rear=NULL;
+        ls->rear=e;
     }
     ls->n++;
 }
-void algo_LinkList::enQueue(string newData){
+void algo_LinkList::enQueue(List *ls,string newData){
     //declare
-    List *ls;
     Element *e;
     if (ls->n==0) {
         //insert first to avoid from error
-        beQueue(newData);
+        beQueue(ls,newData);
     }else{
         //start new Element
         e= new Element();
@@ -162,8 +160,7 @@ void Database::createDatabase(){
     }
     sqlite3_close(db);
 }
-void Database::insertData(string data){
-    List *ls;
+void Database::insertData(List *ls){
     Element *tmp;
     tmp =ls->front;
     while(tmp!=NULL){
