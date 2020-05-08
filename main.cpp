@@ -5,31 +5,21 @@ using namespace std;
 struct Element{
     string data;
     Element *next;
-    Element *tail;
 };
 struct List{
     int n;
-    Element *head;
-    Element *tail;
-    vo
+    Element *front,*rear;
 };
 class algo_LinkList{
     public:
-        //create List
-        List* createList(){
-            List *ls;
-            ls=new List();
-            ls->n=0;
-            ls->head=NULL;
-            ls->tail=NULL;
-            return ls;
-        }
-        //insert begin
-        void insertBegin(List *ls,string newData);
-        //insert end
-        void insertEnd(List *ls,string newData);
-        //show data
-        void displayList(List *ls);
+        //Checking queue()
+        List *Queue();
+        //create beQueue(begin)
+        void beQueue(string newData);
+        //create enQueue(end)
+        void enQueue(string newData);
+        //create deQueue(delete)
+        void deQueue();
 };
 class mainMenu{
     public:
@@ -48,7 +38,7 @@ class Database{
         //create database
         void createDatabase();
         //insert to database
-        void insertData(List *ls,string data);
+        void insertData(string data);
         //Load database
         void loadData();
     private:
@@ -59,9 +49,12 @@ class Database{
         char *message;
 };
 int main(){
-    //declare variable 
+    //declare variable
     int choice;
+    string data;
     List *ls;
+    algo_LinkList Link;
+    ls=Link.Queue();
     mainMenu mainMenu;
     Database database;
 
@@ -80,11 +73,14 @@ int main(){
             mainMenu.chooseLanguage();
             cout<<"Insert language:";
             cin>>data;
-            
+            Link.enQueue(data);
+        }
+        else if (choice==2) {
+          /* code */
         }
         else if (choice==6)
         {
-            database.insertData(ls,data);
+            database.insertData(data);
             cout<<"Exit the program\n\n";
             break;
         }
@@ -103,6 +99,47 @@ void mainMenu::designMenu(){
 void mainMenu::chooseLanguage(){
     cout<<"1.Choose language below";
     cout<<"L={W|W={ab}^n} ,n>0\n";
+}
+//Check Queue empty
+List* algo_LinkList::Queue(){
+    List *ls;
+    ls=new List();
+    ls->n=0;
+    ls->rear=ls->front=NULL;
+    return ls;
+}
+void algo_LinkList::beQueue(string newData){
+    //declare variable
+    List *ls;
+    Element *e;
+    //create new Element
+    e= new Element();
+    e->data=newData;
+    e->next =ls->front;
+    ls->front=e->next;
+    if (ls->n==0) {
+        //set rear to NULL
+        ls->rear=NULL;
+    }
+    ls->n++;
+}
+void algo_LinkList::enQueue(string newData){
+    //declare
+    List *ls;
+    Element *e;
+    if (ls->n==0) {
+        //insert first to avoid from error
+        beQueue(newData);
+    }else{
+        //start new Element
+        e= new Element();
+        e->data=newData;
+        e->next =NULL;
+        //set next to null and set rear become data so rear has the next data
+        ls->rear->next=e;
+        ls->rear=e;
+        ls->n++;
+    }
 }
 void Database::createDatabase(){
     sql="create table Language("
@@ -125,9 +162,10 @@ void Database::createDatabase(){
     }
     sqlite3_close(db);
 }
-void Database::insertData(List *ls,string data){
+void Database::insertData(string data){
+    List *ls;
     Element *tmp;
-    tmp =ls->head
+    tmp =ls->front;
     while(tmp!=NULL){
         sql="insert into Language(data) values('"+tmp->data+"');";
         tmp->next;
