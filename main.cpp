@@ -12,14 +12,11 @@ struct List{
 };
 class algo_LinkList{
     public:
-        //Checking queue()
-        List *Queue();
-        //create beQueue(begin)
-        void beQueue(List *ls,string newData);
-        //create enQueue(end)
-        void enQueue(List *ls,string newData);
-        //create deQueue(delete)
-        void deQueue();
+        List *Queue();//Checking queue()
+        void beQueue(List *ls,string newData); //create beQueue(begin)
+        void enQueue(List *ls,string newData);//create enQueue(end)
+        void showQueue(List *ls);//show the queque
+        void deQueue(List *ls);  //create deQueue(delete)
 };
 class mainMenu{
     public:
@@ -35,12 +32,18 @@ class Automata{
 //All load edit delete save to database
 class Database{
     public:
-        //create database
-        void createDatabase();
-        //insert to database
-        void insertData(List *ls);
-        //Load database
-        void loadData();
+        void createDatabase();//create database
+        void insertData(List *ls);//insert to database
+        static int callback(void *data, int argc,char **argv,char** azColName){
+          int i;
+          fprintf(stderr, "%s:", (const char*)data );
+          for ( i = 0; i < argc; i++) {
+              printf("%s=%s\n",azColName[i],argv[i]?argv[i]:"NULL" );
+          }
+          printf("\n");
+          return 0;
+        }
+        void loadData(List *ls,string data);//Load data from database into list
     private:
         string sql;
         sqlite3 *db;
@@ -76,7 +79,13 @@ int main(){
             Link.enQueue(ls,data);
         }
         else if (choice==2) {
-          /* code */
+          Link.showQueue(ls);
+        }
+        else if (choice==3) {
+          Link.deQueue(ls);
+        }
+        else if (choice==4) {
+          database.loadData(ls,data);
         }
         else if (choice==6)
         {
@@ -100,12 +109,14 @@ void mainMenu::chooseLanguage(){
     cout<<"1.Choose language below";
     cout<<"L={W|W={ab}^n} ,n>0\n";
 }
-//Check Queue empty
+
+//Algorithm
 List* algo_LinkList::Queue(){
     List *ls;
     ls=new List();
     ls->n=0;
-    ls->rear=ls->front=NULL;
+    ls->rear=NULL;
+    ls->front=NULL;
     return ls;
 }
 void algo_LinkList::beQueue(List *ls,string newData){
@@ -120,7 +131,7 @@ void algo_LinkList::beQueue(List *ls,string newData){
         //set rear to NULL
         ls->rear=e;
     }
-    ls->n++;
+    ls->n=ls->n+1;
 }
 void algo_LinkList::enQueue(List *ls,string newData){
     //declare
@@ -129,16 +140,34 @@ void algo_LinkList::enQueue(List *ls,string newData){
         //insert first to avoid from error
         beQueue(ls,newData);
     }else{
-        //start new Element
-        e= new Element();
+        e= new Element();//start new Element
         e->data=newData;
         e->next =NULL;
         //set next to null and set rear become data so rear has the next data
         ls->rear->next=e;
         ls->rear=e;
-        ls->n++;
+        ls->n=ls->n+1;
+
     }
 }
+void algo_LinkList::deQueue(List *ls){
+    Element *tmp;
+    if (ls->n==0) {
+        cout<<"You cant delete\n\n";
+    }
+    else{
+        tmp=ls->front;
+        ls->front=ls->front->next;
+        delete tmp;
+        if (ls->n==0) {
+            ls->rear=NULL;
+        }
+        ls->n=ls->n-1;
+        cout<<"Successful Delete\n\n";
+    }
+}
+
+//Database
 void Database::createDatabase(){
     sql="create table Language("
         "lid integer primary key autoincrement,"
@@ -161,17 +190,36 @@ void Database::createDatabase(){
     sqlite3_close(db);
 }
 void Database::insertData(List *ls){
-    Element *tmp;
+    Element *tmp,*tmp1;
     tmp =ls->front;
-    sql="insert into Language(data) values('"+tmp->data+"');";
-    tmp->next;
-    // sql="insert into Language(data) values('"+tmp->data+"');";
     exit=sqlite3_open("automata.db",&db);
-    exit=sqlite3_exec(db,sql.c_str(),0,NULL,&message);
+    while (tmp!=NULL) {
+        sql="insert into Language(data) values('"+tmp->data+"');";
+        tmp=tmp->next;
+        exit=sqlite3_exec(db,sql.c_str(),0,NULL,&message);
+    }
     if(exit!=SQLITE_OK){
         cout<<"Fail record\n";
     }else{
         cout<<"Successful record\n";
     }
     sqlite3_close(db);
+}
+void algo_LinkList::showQueue(List *ls){
+    Element *tmp;
+    tmp=ls->front;
+    if (ls->n==0) {
+        cout<<"No Language\n";
+    }
+    while (tmp !=NULL) {
+        cout<<" "<<tmp->data<<endl;
+        tmp=tmp->next;
+    }
+    cout<<"\n";
+}
+void Database::loadData(List *ls,string data){
+    sql="select * from Language;";
+    exit =sqlite3_open("automata.db",&db);
+    exit=sqlite3_exec(db,sql.c_str(),callback,(void *)data.c_str(),NULL);
+
 }
