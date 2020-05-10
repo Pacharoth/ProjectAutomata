@@ -1,7 +1,10 @@
 #include <iostream>
 #include <sqlite3.h>
 #include <cstring>
+#include <bits/stdc++.h>
 using namespace std;
+
+
 struct Element{
     string data;
     Element *next;
@@ -10,6 +13,9 @@ struct List{
     int n;
     Element *front,*rear;
 };
+
+
+
 class algo_LinkList{
     public:
         List *Queue();//Checking queue()
@@ -18,6 +24,8 @@ class algo_LinkList{
         void showQueue(List *ls);//show the queque
         void deQueue(List *ls);  //create deQueue(delete)
 };
+
+
 class mainMenu{
     public:
        void designMenu();//display the main Menu
@@ -29,18 +37,27 @@ class Automata{
 
 
 };
+
+
 //All load edit delete save to database
 class Database{
     public:
         void createDatabase();//create database
         void insertData(List *ls);//insert to database
+        void splitSentence(string str);//split the string from sentence in database
         static int callback(void *data, int argc,char **argv,char** azColName){
           int i;
-          fprintf(stderr, "%s:", (const char*)data );
-          for ( i = 0; i < argc; i++) {
-              printf("%s=%s\n",azColName[i],argv[i]?argv[i]:"NULL" );
+          Database database;
+
+          fprintf(stderr, "%s", (const char*)data );//read from any kind of database when execute
+          for ( i = 0; i < argc; i++) { //loading one query
+              printf("%s=%s\n",azColName[i],argv[i]);
+              printf("%s\n",argv[i] );
+              if (i==1) {
+                  database.splitSentence((string)argv[i]);
+              }
           }
-          printf("\n");
+          printf("\n" );
           return 0;
         }
         void loadData(List *ls,string data);//Load data from database into list
@@ -51,6 +68,9 @@ class Database{
         char hey=0;
         char *message;
 };
+
+
+
 int main(){
     //declare variable
     int choice;
@@ -60,8 +80,8 @@ int main(){
     ls=Link.Queue();
     mainMenu mainMenu;
     Database database;
-
     database.createDatabase();
+    database.loadData(ls,data);//Load the data
     while (1)
     {
 
@@ -85,7 +105,7 @@ int main(){
           Link.deQueue(ls);
         }
         else if (choice==4) {
-          database.loadData(ls,data);
+
         }
         else if (choice==6)
         {
@@ -95,6 +115,9 @@ int main(){
         }
     }
 }
+
+
+
 //display main Menu
 void mainMenu::designMenu(){
     cout<<"\t\t1.Input the strings.\n\n";
@@ -109,6 +132,8 @@ void mainMenu::chooseLanguage(){
     cout<<"1.Choose language below";
     cout<<"L={W|W={ab}^n} ,n>0\n";
 }
+
+
 
 //Algorithm
 List* algo_LinkList::Queue(){
@@ -166,6 +191,21 @@ void algo_LinkList::deQueue(List *ls){
         cout<<"Successful Delete\n\n";
     }
 }
+void algo_LinkList::showQueue(List *ls){
+    Element *tmp;
+    tmp=ls->front;
+    if (ls->n==0) {
+        cout<<"No Language\n";
+    }
+    while (tmp !=NULL) {
+        cout<<" "<<tmp->data<<endl;
+        tmp=tmp->next;
+    }
+    cout<<"\n";
+}
+
+
+
 
 //Database
 void Database::createDatabase(){
@@ -205,21 +245,19 @@ void Database::insertData(List *ls){
     }
     sqlite3_close(db);
 }
-void algo_LinkList::showQueue(List *ls){
-    Element *tmp;
-    tmp=ls->front;
-    if (ls->n==0) {
-        cout<<"No Language\n";
-    }
-    while (tmp !=NULL) {
-        cout<<" "<<tmp->data<<endl;
-        tmp=tmp->next;
-    }
-    cout<<"\n";
-}
 void Database::loadData(List *ls,string data){
     sql="select * from Language;";
     exit =sqlite3_open("automata.db",&db);
     exit=sqlite3_exec(db,sql.c_str(),callback,(void *)data.c_str(),NULL);
-
+}
+void Database::splitSentence(string str){
+    istringstream ss(str);
+    algo_LinkList Link;
+    List *ls;
+    do {
+        string word;
+        ss>>word;
+        cout<<word<<endl;
+        Link.enQueue(ls,word);
+    } while(ss);
 }
