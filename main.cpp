@@ -13,7 +13,11 @@ struct List{
     int n;
     Element *front,*rear;
 };
-
+struct checking{
+    string checking;
+};
+struct checking check[50];
+int latestIndex=0;
 
 
 class algo_LinkList{
@@ -23,6 +27,7 @@ class algo_LinkList{
         void enQueue(List *ls,string newData);//create enQueue(end)
         void showQueue(List *ls);//show the queque
         void deQueue(List *ls);  //create deQueue(delete)
+        void loadProgram(List *ls);
 };
 
 
@@ -51,10 +56,10 @@ class Database{
 
           fprintf(stderr, "%s", (const char*)data );//read from any kind of database when execute
           for ( i = 0; i < argc; i++) { //loading one query
-              printf("%s=%s\n",azColName[i],argv[i]);
-              printf("%s\n",argv[i] );
+              // printf("%s=%s\n",azColName[i],argv[i]);
               if (i==1) {
                   database.splitSentence((string)argv[i]);
+
               }
           }
           printf("\n" );
@@ -82,6 +87,8 @@ int main(){
     Database database;
     database.createDatabase();
     database.loadData(ls,data);//Load the data
+    Link.loadProgram(ls);//load into program
+
     while (1)
     {
 
@@ -203,6 +210,12 @@ void algo_LinkList::showQueue(List *ls){
     }
     cout<<"\n";
 }
+void algo_LinkList::loadProgram(List *ls){
+    algo_LinkList Link;
+    for (int i = 0; i < latestIndex; i++) {
+        Link.enQueue(ls,check[i].checking);
+    }
+}
 
 
 
@@ -222,11 +235,11 @@ void Database::createDatabase(){
     }else{
         cout<<"Can create database\n";
     }
-    if(exit!=SQLITE_OK){
-        cout<<"Fail create Table\n";
-    }else{
-        cout<<"Successful create the table\n";
-    }
+    // if(exit!=SQLITE_OK){
+    //     cout<<"Fail create Table\n";
+    // }else{
+    //     cout<<"Successful create the table\n";
+    // }
     sqlite3_close(db);
 }
 void Database::insertData(List *ls){
@@ -238,17 +251,16 @@ void Database::insertData(List *ls){
         tmp=tmp->next;
         exit=sqlite3_exec(db,sql.c_str(),0,NULL,&message);
     }
-    if(exit!=SQLITE_OK){
-        cout<<"Fail record\n";
-    }else{
-        cout<<"Successful record\n";
-    }
     sqlite3_close(db);
 }
 void Database::loadData(List *ls,string data){
+    algo_LinkList Link;
     sql="select * from Language;";
     exit =sqlite3_open("automata.db",&db);
     exit=sqlite3_exec(db,sql.c_str(),callback,(void *)data.c_str(),NULL);
+    cout<<data.c_str();
+
+
 }
 void Database::splitSentence(string str){
     istringstream ss(str);
@@ -257,7 +269,7 @@ void Database::splitSentence(string str){
     do {
         string word;
         ss>>word;
-        cout<<word<<endl;
-        Link.enQueue(ls,word);
+        check[latestIndex].checking=word;
+        latestIndex++;
     } while(ss);
 }
