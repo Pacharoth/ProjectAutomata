@@ -258,9 +258,6 @@ void Database::loadData(List *ls,string data){
     sql="select * from Language;";
     exit =sqlite3_open("automata.db",&db);
     exit=sqlite3_exec(db,sql.c_str(),callback,(void *)data.c_str(),NULL);
-    cout<<data.c_str();
-
-
 }
 void Database::splitSentence(string str){
     istringstream ss(str);
