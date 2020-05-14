@@ -228,18 +228,7 @@ void Database::createDatabase(){
     //create database
     exit=sqlite3_open("automata.db",&db);
     //execute the query
-    exit =sqlite3_exec(db,sql.c_str(),0,NULL,&message);
-    //check if successful create or not
-    if(hey!=SQLITE_OK){
-        cout<<"Fail create database\n";
-    }else{
-        cout<<"Can create database\n";
-    }
-    // if(exit!=SQLITE_OK){
-    //     cout<<"Fail create Table\n";
-    // }else{
-    //     cout<<"Successful create the table\n";
-    // }
+    exit =sqlite3_exec(db,sql.c_str(),NULL,0,&message);
     sqlite3_close(db);
 }
 void Database::insertData(List *ls){
