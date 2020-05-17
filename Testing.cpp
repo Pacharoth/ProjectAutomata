@@ -1,18 +1,15 @@
-#include"Processing.hpp"
+#include"ProcessingCode.hpp"
 
-int main(){
-    Queue *q;
-    stack *s;
-    s=algo.createStack();
-    q=algo.createQueue();
-    algo.beQueue(q,1);
-    algo.enQueue(q,2);
-    algo.displayQueue(q);
-    algo.push(s,"Hello");
-    algo.push(s,"World");
-    algo.push(s,"World");
-    algo.push(s,"World");
-    algo.pop(s);
-    algo.displayStack(s);
+int main(int argc, char const *argv[]) {
+    algorithm_part algorithm;
+    Queue *queueList;
 
+    queueList = algorithm.createQueue();
+    algorithm.beQueue(queueList,"hello");
+    algorithm.enQueue(queueList,"hello1");
+    algorithm.displayQueue(queueList);
+    algorithm.deQueue(queueList);
+    algorithm.displayQueue(queueList);
+    
+    return 0;
 }

@@ -1,29 +1,30 @@
 #include <iostream>
 #include <cstring>
+#include <sqlite3.h>
+#include <bits/stdc++.h>
+
 using namespace std;
 
-typedef struct {
+struct Element{
     string      language;
-    Element     *next;
-    Element     *previous;
-}Element;
+    Element     *next,*previous;
+};
+typedef struct Element Element;
 
-typedef struct{
+struct Queue{
     int         access_element;
-    Element     *front;
-    Element     *rear;
-}Queue;
+    Element     *front,*rear;
+};
+typedef struct Queue Queue;
 
 //declare class do Algorithm
 class algorithm_part{
 public:
     Queue       *createQueue();         //create the queue
-    void        beQueue(Queue *queueList,string newLanguage);       //insert queue to use in end queue
-    void        enQueue(Queue *queueList,string newLanguage);
+    void        beQueue(Queue *queueList, string newLanguage);       //insert queue to use in end queue
+    void        enQueue(Queue *queueList, string newLanguage);
     void        deQueue(Queue *queueList);
-private:
-    string      languageForUserInput;
-    Queue       *queueList;
+    void        displayQueue(Queue *queueList);
 };
 
 //declare class automata
@@ -37,49 +38,100 @@ public:
 //declare class Database
 class database_part{
 public:
+    static int  callback(void* data,int init_string,char** column_data,char** colName){
+        database_part database;
+        fprintf(stderr, "%s\n",(const char*)data );                     //convert those data as string
+
+
+        for (int i = 0; i < init_string; i++) {
+            if (i == 1) {
+                database.splitSentence((string)column_data[i]);                     //check the column to take a column data
+            }
+        }
+        printf("\n" );
+        return 0;
+    }
     void        splitSentence(string splitString);
-    static int  callback(void *data,int init_string,char **row_data,char **colName);        //create callback to store data into queue
 
     void        createDatabase();
     void        insertDatabase(Queue *queueList);
     void        selectDatbase(Queue *queueList,string initString);
+private:
+    sqlite3     *db;
+    char        exit=0;
+    char        hey=0;
+    char        *message;
 };
 
 //part algorithm
-Queue* algorithm_part:: createQueue(){
-    Queue *list_Data;
-    list_Data = new Queue();
-    list_Data->access_element = 0;
-    list_Data->front = NULL:
-    list_Data->rear = NULL;
-    queueList = list_Data;
+//create queue
+Queue* algorithm_part::createQueue(){
+    Queue *queueList;
+    queueList = new Queue();
+    queueList->front = NULL;
+    queueList->rear = NULL;
     return queueList;
 }
 
-void algorithm_part::beQueue(Queue *queueList,string newLanguage){
+//add begin
+void algorithm_part::beQueue(Queue *queueList, string newLanguage){
     Element *newElement;
     newElement = new Element();
-    languageForUserInput = newLanguage;
-    newElement->langauge = languageForUserInput;        //set langauge in queque as data parameter
-    newElement->previous = NULL;                        //set previous of newElement point null
-    newElement->next = queueList->front;                //set next of queue become front
+
+    newElement->language = newLanguage;
+    newElement->previous = NULL;                            //previous of new element no need to point to anything for first time
+    newElement->next = queueList->front;                   //set next as front
+
     if (queueList->access_element == 0)
-        quequeList->rear = e;                             //if element 0 so data will set at rear too
+        queueList->rear = newElement;                      //check if no data set rear to has those data
     if (queueList->access_element != 0)
-        quequeList->front->previous = e;                  //if element bigger than 0 so front point back so we can access back
-    queueList->access_element++;                        //increment to next element, but element change the whole thing
-                                                        //like first 1 and then all of list element change to 2
+        queueList->front->previous = newElement;          //check if bigger then 0 or opposite than 0 set previous of front has data
+
+    queueList->front = newElement;                        //set front point to new element so data will set there
+    queueList->access_element++;
 }
 
-void algorithm_part::enQueue(Queue *queueList,string newLanguage){
+//add enQueue
+void algorithm_part::enQueue(Queue *queueList, string newLanguage){
     Element *newElement;
+
     if (queueList->access_element == 0) {
-        beQueue(queueList,newLanguage);
+        beQueue(queueList, newLanguage);
     }else{
         newElement = new Element();
-        newElement->next = NULL;                         //next of newElement set to null  
-        quequeList->rear->next = newElement;             //rear next set newElement
-        newElement->previous = queueList->rear;          //newelement previous set as rear
-        quequeList->rear = newElement;                   //set data to rear so last element
+        newElement->language = newLanguage;
+        newElement->next = NULL;
+        newElement->previous = queueList->rear;
+        queueList->rear->next = newElement;
+        queueList->rear = newElement;
+        queueList->access_element++;
+    }
+}
+
+//delete begin queueList
+void algorithm_part::deQueue(Queue *queueList){
+    Element *temporary;
+    if (queueList == 0) {
+        cout<<"You cant delete\n";
+    }else{
+        temporary = queueList->front;
+        queueList->front = queueList->front->next;
+        if (queueList->access_element >= 2)
+            queueList->front->previous = NULL;
+        delete temporary;
+        if (queueList->access_element == 1)
+            queueList->rear = NULL;
+        queueList->access_element--;
+    }
+}
+
+//show the result
+void algorithm_part::displayQueue(Queue *queueList){
+    Element *temporary;
+
+    temporary = queueList->front;
+    while (temporary != NULL) {
+        cout<<temporary->language<<endl;
+        temporary = temporary->next;
     }
 }
