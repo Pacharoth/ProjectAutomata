@@ -160,8 +160,10 @@ public:
 //Automata Algorithm
 class automata{
 public:
-    //design Automata
-    //from start state
+
+    void startState(){
+
+    }
 
 }automata;
 
@@ -169,13 +171,21 @@ public:
 //All Menu
 class Menu{
 public:
-
+    //Main menu
     void mainMenu(){
-        cout<<"\t\t1.Input the strings.\n\n";
+        cout<<"\t\t\t================================\n";
+        cout<<"\t\t\t+Welcome to Automata Program-_-+\n";
+        cout<<"\t\t\t================================\n\n";
+        cout<<"\t\t1.Choose Insert langauge.\n\n";
         cout<<"\t\t2.Check the strings(FA or DFA).\n\n";
         cout<<"\t\t3.Check strings accept by a FA or not.\n\n";
         cout<<"\t\t4.Construct an equivalent DFA from an NFA.\n\n";
         cout<<"\t\t5. Minimize a DFA.\n\n";
         cout<<"\t\t6. Exit the program.\n\n";
+    }
+
+    //in Insert menu
+    void insertMenu(){
+        cout<<"";
     }
 }menu;
