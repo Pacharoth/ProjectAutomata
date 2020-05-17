@@ -64,13 +64,22 @@ void algorithm_part::beQueue(Queue *queueList,string newLanguage){
     newElement->previous = NULL;                        //set previous of newElement point null
     newElement->next = queueList->front;                //set next of queue become front
     if (queueList->access_element == 0)
-        quequeList->rear=e;                             //if element 0 so data will set at rear too
+        quequeList->rear = e;                             //if element 0 so data will set at rear too
     if (queueList->access_element != 0)
-        quequeList->front->previous=e;                  //if element bigger than 0 so front point back so we can access back
+        quequeList->front->previous = e;                  //if element bigger than 0 so front point back so we can access back
     queueList->access_element++;                        //increment to next element, but element change the whole thing
                                                         //like first 1 and then all of list element change to 2
 }
 
 void algorithm_part::enQueue(Queue *queueList,string newLanguage){
-    
+    Element *newElement;
+    if (queueList->access_element == 0) {
+        beQueue(queueList,newLanguage);
+    }else{
+        newElement = new Element();
+        newElement->next = NULL;                         //next of newElement set to null  
+        quequeList->rear->next = newElement;             //rear next set newElement
+        newElement->previous = queueList->rear;          //newelement previous set as rear
+        quequeList->rear = newElement;                   //set data to rear so last element
+    }
 }
